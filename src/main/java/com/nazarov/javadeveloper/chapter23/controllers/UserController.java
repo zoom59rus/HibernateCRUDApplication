@@ -11,12 +11,12 @@ public class UserController {
         this.userService = new UserServiceImpl();
     }
 
-    public Writer save(Writer writerDto){
-        return userService.save(writerDto);
+    public Writer save(Writer writer){
+        return userService.save(writer);
     }
 
-    public Writer update(Writer writerDto){
-        return userService.update(writerDto);
+    public Writer update(Writer writer){
+        return userService.update(writer);
     }
 
     public Writer get(Long id){
@@ -29,7 +29,6 @@ public class UserController {
     }
 
     public Writer getByLastName(String lastName){
-
         return userService.getByLastName(lastName);
     }
 

@@ -61,13 +61,13 @@ public class RegionView {
     public Region createRegionDialog() {
         Scanner sc = new Scanner(System.in);
         System.out.print("Введите регион: ");
-        String region = sc.nextLine();
-        while (!matchRegion(region)) {
+        String input = sc.nextLine();
+        while (!matchRegion(input)) {
             System.err.print("Вы ошиблись в написании региона, попробуйте еще раз.");
             System.out.print("Введите регион: ");
-            region = sc.nextLine();
+            input = sc.nextLine();
         }
-        return new Region(null, region);
+        return new Region(input);
     }
 
     public String toString(Region region) {

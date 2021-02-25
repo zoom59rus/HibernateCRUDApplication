@@ -28,16 +28,18 @@ public class WriterView {
 
     public void createUserDialog() {
         Scanner sc = new Scanner(System.in);
+        Writer writer = new Writer();
 
         System.out.print("Введите имя пользователя: ");
-        String firstName = matchName();
-
+        writer.setFirstName(matchName());
         System.out.print("Введите фамилию пользователя: ");
-        String lastName = matchName();
+        writer.setLastName(matchName());
 
         Region region = regionView.createRegionDialog();
+        writer.setRegion(region);
+
         List<Post> posts = postView.createPostDialog(null);
-        Writer writer = new Writer(firstName, lastName, region);
+        writer.addPosts(posts);
 
         System.out.println("Создан пользователь:");
         printWriter(writer);
@@ -60,14 +62,14 @@ public class WriterView {
             case 1: {
                 System.out.print("Введите имя пользователя: ");
                 String firstName = matchName();
-                Writer find = writerController.getByFirstName(firstName);
+                Writer find = userController.getByFirstName(firstName);
                 System.out.println(find);
                 break;
             }
             case 2: {
                 System.out.print("Введите имя пользователя: ");
                 String lastName = matchName();
-                Writer find = writerController.getByLastName(lastName);
+                Writer find = userController.getByLastName(lastName);
                 System.out.println(find);
                 break;
             }
@@ -77,8 +79,8 @@ public class WriterView {
                 String firstName = matchName();
                 System.out.print("Введите фамилию: ");
                 String lastName = matchName();
-                System.out.println(writerController.getByFirstName(firstName));
-                System.out.println(writerController.getByFirstName(lastName));
+                System.out.println(userController.getByFirstName(firstName));
+                System.out.println(userController.getByLastName(lastName));
                 break;
             }
             case 4: {
@@ -92,7 +94,7 @@ public class WriterView {
                 System.out.print("Введите регион пользователя: ");
                 String region = matchName();
                 Region find = regionView.getRegion(region);
-//                System.out.println(writerController.getByRegion(find.getId()));
+//                System.out.println(userController.);
                 break;
             }
         }

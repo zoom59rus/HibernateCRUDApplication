@@ -29,7 +29,7 @@ public class Writer{
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "region_id", referencedColumnName = "id")
     private Region region;
 
@@ -49,7 +49,7 @@ public class Writer{
     }
 
     public void addPosts(List<Post> postList){
-        postList = posts.stream().peek(p -> p.setWriter(this)).collect(Collectors.toList());
+        postList = postList.stream().peek(p -> p.setWriter(this)).collect(Collectors.toList());
         posts.addAll(postList);
     }
 }

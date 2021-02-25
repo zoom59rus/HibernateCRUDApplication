@@ -16,6 +16,7 @@ public class Region {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     @EqualsAndHashCode.Exclude
     private Long id;
 

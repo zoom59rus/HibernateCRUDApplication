@@ -19,11 +19,12 @@ public class WriterRepositoryImpl extends GenericRepositoryImp<Writer, Long> imp
     @Override
     public Writer getByFirstName(String firstName) {
         Writer writer = null;
-        String sqlQuery = String.format("SELECT * FROM writers WHERE first_name='%s'", firstName);
         try (
                 Session session = super.getSession();
         ) {
-            writer = (Writer) session.createSQLQuery(sqlQuery).addEntity(Writer.class).getSingleResult();
+            writer = (Writer) session.createQuery(String.format("FROM Writer W WHERE W.firstName='%s'", firstName))
+                    .list()
+                    .get(0);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -34,11 +35,12 @@ public class WriterRepositoryImpl extends GenericRepositoryImp<Writer, Long> imp
     @Override
     public Writer getByLastName(String lastName) {
         Writer writer = null;
-        String sqlQuery = String.format("SELECT * FROM writers WHERE last_name='%s'", lastName);
         try (
                 Session session = super.getSession();
         ) {
-            writer = (Writer) session.createSQLQuery(sqlQuery).addEntity(Writer.class).getSingleResult();
+            writer = (Writer) session.createQuery(String.format("FROM Writer W WHERE W.lastName='%s'", lastName))
+                    .list()
+                    .get(0);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -53,7 +55,6 @@ public class WriterRepositoryImpl extends GenericRepositoryImp<Writer, Long> imp
                 Session session = super.getSession();
         ) {
             writer = session.find(Writer.class, id);
-            writer.setPosts(writer.getPosts());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
