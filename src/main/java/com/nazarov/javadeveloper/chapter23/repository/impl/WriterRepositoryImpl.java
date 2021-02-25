@@ -4,10 +4,8 @@ import com.nazarov.javadeveloper.chapter23.annotations.MyRepository;
 import com.nazarov.javadeveloper.chapter23.entity.Writer;
 import com.nazarov.javadeveloper.chapter23.repository.WriterRepository;
 import org.hibernate.Session;
-import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
+import org.hibernate.Transaction;
 
-import java.sql.SQLDataException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,86 +17,67 @@ public class WriterRepositoryImpl extends GenericRepositoryImp<Writer, Long> imp
     }
 
     @Override
-    public Writer findByFirstName(String firstName) {
-        return findByName(firstName);
-    }
-
-    @Override
-    public Writer findByLastName(String lastName) {
-        Session session = null;
-        Writer writer = null;
-        String sqlQuery = String.format("SELECT * FROM writers WHERE last_name='%s'", lastName);
-        try {
-            session = super.getSession();
-            writer = (Writer) session.createSQLQuery(sqlQuery).addEntity(Writer.class).getSingleResult();
-            session.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-
-        return writer;
-    }
-
-    @Override
-    public Writer findById(Long id) {
-        Session session = null;
-        Writer writer = null;
-        try {
-            session = super.getSession();
-            writer = session.find(Writer.class, id);
-            writer.setPosts(writer.getPosts());
-            session.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-
-        return writer;
-    }
-
-    @Override
-    public Writer findByName(String firstName) {
-        Session session = null;
+    public Writer getByFirstName(String firstName) {
         Writer writer = null;
         String sqlQuery = String.format("SELECT * FROM writers WHERE first_name='%s'", firstName);
-        try {
-            session = super.getSession();
+        try (
+                Session session = super.getSession();
+        ) {
             writer = (Writer) session.createSQLQuery(sqlQuery).addEntity(Writer.class).getSingleResult();
-            session.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
 
         return writer;
     }
 
     @Override
-    public List<Writer> findAll() {
-        Session session = null;
+    public Writer getByLastName(String lastName) {
+        Writer writer = null;
+        String sqlQuery = String.format("SELECT * FROM writers WHERE last_name='%s'", lastName);
+        try (
+                Session session = super.getSession();
+        ) {
+            writer = (Writer) session.createSQLQuery(sqlQuery).addEntity(Writer.class).getSingleResult();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return writer;
+    }
+
+    @Override
+    public Writer getById(Long id) {
+        Writer writer = null;
+        try (
+                Session session = super.getSession();
+        ) {
+            writer = session.find(Writer.class, id);
+            writer.setPosts(writer.getPosts());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return writer;
+    }
+
+    @Override
+    public Writer getByName(String firstName) {
+        return getByFirstName(firstName);
+
+    }
+
+    @Override
+    public List<Writer> getAll() {
         List<Writer> writers = new ArrayList<>();
-        try {
-            session = super.getSession();
+        try (
+                Session session = super.getSession();
+        ) {
             writers = session.createSQLQuery("SELECT * FROM writers")
                     .addEntity(Writer.class)
                     .getResultList();
-            session.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
 
         return writers;
@@ -106,24 +85,21 @@ public class WriterRepositoryImpl extends GenericRepositoryImp<Writer, Long> imp
 
     @Override
     public Writer save(Writer writer) {
-        Session session = null;
-        try {
-            session = super.getSession();
-            session.getTransaction().begin();
+        Transaction tx = null;
+        try (
+                Session session = super.getSession()
+        ) {
+            tx = session.getTransaction();
+            tx.begin();
 
             session.save(writer);
 
-            session.getTransaction().commit();
-            session.close();
+            tx.commit();
         } catch (Exception e) {
-            if (session.getTransaction() != null) {
-                session.getTransaction().rollback();
+            if (tx != null) {
+                tx.rollback();
             }
             System.out.println(e.getMessage());
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
 
         return writer;
@@ -131,44 +107,41 @@ public class WriterRepositoryImpl extends GenericRepositoryImp<Writer, Long> imp
 
     @Override
     public Writer update(Writer writer) {
-        Session session = null;
-        try {
-            session = super.getSession();
-            session.getTransaction().begin();
+        Transaction tx = null;
+
+        try (
+                Session session = super.getSession()
+        ) {
+            tx = session.getTransaction();
+            tx.begin();
             session.update(writer);
-            session.getTransaction().commit();
-            session.close();
+            tx.commit();
         } catch (Exception e) {
-            if (session.getTransaction() != null) {
-                session.getTransaction().rollback();
+            if (tx != null) {
+                tx.rollback();
             }
             System.out.println(e.getMessage());
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
+
         return writer;
     }
 
     @Override
     public void remove(Writer writer) {
-        Session session = null;
-        try {
-            session = super.getSession();
-            session.getTransaction().begin();
+        Transaction tx = null;
+
+        try (
+                Session session = super.getSession()
+        ) {
+            tx = session.getTransaction();
+            tx.begin();
             session.delete(writer);
-            session.getTransaction().commit();
-            session.close();
+            tx.commit();
         } catch (Exception e) {
-            if (session.getTransaction() != null) {
-                session.getTransaction().rollback();
+            if (tx != null) {
+                tx.rollback();
             }
             System.out.println(e.getMessage());
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
     }
 }

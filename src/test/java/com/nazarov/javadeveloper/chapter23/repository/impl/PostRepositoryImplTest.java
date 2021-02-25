@@ -27,7 +27,7 @@ class PostRepositoryImplTest {
 
     @Test
     void findByName_also_findByContent() {
-        Post result = postRepository.findByName("Single saving");
+        Post result = postRepository.getByName("Single saving");
 
         assertNotNull(result);
         assertNotNull(result.getId());
@@ -45,7 +45,7 @@ class PostRepositoryImplTest {
 
     @Test
     void findById() {
-        Post result = postRepository.findById(6L);
+        Post result = postRepository.getById(6L);
 
         assertNotNull(result);
         assertNotNull(result.getId());
@@ -59,7 +59,7 @@ class PostRepositoryImplTest {
 
     @Test
     void findAll() {
-        List<Post> result = postRepository.findAll();
+        List<Post> result = postRepository.getAll();
 
         assertNotNull(result);
         assertEquals(1, result.size());

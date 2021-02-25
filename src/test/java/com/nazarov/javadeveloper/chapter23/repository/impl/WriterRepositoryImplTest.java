@@ -1,6 +1,5 @@
 package com.nazarov.javadeveloper.chapter23.repository.impl;
 
-import com.nazarov.javadeveloper.chapter23.entity.Post;
 import com.nazarov.javadeveloper.chapter23.entity.Region;
 import com.nazarov.javadeveloper.chapter23.entity.Writer;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +24,7 @@ class WriterRepositoryImplTest {
 
     @Test
     void findByFirstName() {
-        Writer result = writerRepository.findByFirstName("FirstName");
+        Writer result = writerRepository.getByFirstName("FirstName");
 
         assertNotNull(result);
         assertNotNull(result.getPosts());
@@ -39,7 +37,7 @@ class WriterRepositoryImplTest {
 
     @Test
     void findByLastName() {
-        Writer result = writerRepository.findByLastName("LastName");
+        Writer result = writerRepository.getByLastName("LastName");
 
         assertNotNull(result);
         assertNotNull(result.getPosts());
@@ -52,7 +50,7 @@ class WriterRepositoryImplTest {
 
     @Test
     void findById() {
-        Writer result = writerRepository.findById(8L);
+        Writer result = writerRepository.getById(8L);
 
         assertNotNull(result);
         assertNotNull(result.getPosts());
@@ -69,7 +67,7 @@ class WriterRepositoryImplTest {
 
     @Test
     void findAll() {
-        List<Writer> results = writerRepository.findAll();
+        List<Writer> results = writerRepository.getAll();
 
         assertNotNull(results);
         assertEquals(2, results.size());

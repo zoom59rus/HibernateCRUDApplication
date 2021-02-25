@@ -1,7 +1,6 @@
 package com.nazarov.javadeveloper.chapter23.repository.impl;
 
 import com.nazarov.javadeveloper.chapter23.ApplicationContext;
-import com.nazarov.javadeveloper.chapter23.Context;
 import com.nazarov.javadeveloper.chapter23.repository.GenericRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,11 +17,11 @@ public abstract class GenericRepositoryImp<T, ID extends Serializable> implement
         this.entity = entity;
     }
 
-    public abstract T findById(ID id);
+    public abstract T getById(ID id);
 
-    public abstract T findByName(String name);
+    public abstract T getByName(String name);
 
-    public abstract List<T> findAll();
+    public abstract List<T> getAll();
 
     public abstract T save(T o);
 

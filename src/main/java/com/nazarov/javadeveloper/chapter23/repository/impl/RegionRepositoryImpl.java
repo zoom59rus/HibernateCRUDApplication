@@ -16,48 +16,55 @@ public class RegionRepositoryImpl extends GenericRepositoryImp<Region, Long> imp
     }
 
     @Override
-    public Region findById(Long id) {
-        Session session = super.getSession();
-        Region find = session.get(Region.class, id);
+    public Region getById(Long id) {
+        Region find = null;
+        try (
+                Session session = super.getSession()
+        ) {
+            find = session.get(Region.class, id);
+        }
 
         return find;
     }
 
     @Override
-    public Region findByName(String name) {
-        Session session = super.getSession();
+    public Region getByName(String name) {
+        Region find = null;
+        try (
+                Session session = super.getSession()
+        ) {
+            String sqlQuery = String.format("SELECT * FROM regions WHERE name='%s'", name);
+            find = (Region) session.createSQLQuery(sqlQuery)
+                    .addEntity(Region.class)
+                    .uniqueResult();
 
-        String sqlQuery = String.format("SELECT * FROM regions WHERE name='%s'", name);
-        Region find = (Region) session.createSQLQuery(sqlQuery)
-                .addEntity(Region.class)
-                .uniqueResult();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         return find;
     }
 
     @Override
-    public List<Region> findAll() {
+    public List<Region> getAll() {
         return null;
     }
 
     @Override
     public Region save(Region region) {
-        Session session = null;
+        Transaction tx = null;
 
-        try {
-            session = super.getSession();
-            session.getTransaction().begin();
+        try (Session session = super.getSession()
+        ) {
+            tx = session.getTransaction();
+            tx.begin();
             session.save(region);
-            session.getTransaction().commit();
-            session.close();
+            tx.commit();
         } catch (Exception e) {
-            if (session.getTransaction() != null) {
-                session.getTransaction().rollback();
+            if (tx != null) {
+                tx.rollback();
             }
             System.out.println(e.getMessage());
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
 
         return region;
@@ -65,26 +72,22 @@ public class RegionRepositoryImpl extends GenericRepositoryImp<Region, Long> imp
 
     @Override
     public Region update(Region region) {
-        Session session = null;
+        Transaction tx = null;
         String sqlQuery = String.format("UPDATE regions SET name='%s' WHERE id=%d", region.getName(), region.getId());
-        try {
-            session = super.getSession();
-            session.getTransaction().begin();
+        try (
+                Session session = super.getSession()
+        ) {
+            tx = session.getTransaction();
             int row = session.createSQLQuery(sqlQuery).addEntity(Region.class).executeUpdate();
             if (row == 0 || row > 1) {
                 //Some Warn
             }
             session.getTransaction().commit();
-            session.close();
         } catch (Exception e) {
-            if (session.getTransaction() != null) {
-                session.getTransaction().rollback();
+            if (tx != null) {
+                tx.rollback();
             }
             System.out.println(e.getMessage());
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
 
         return region;
@@ -92,11 +95,11 @@ public class RegionRepositoryImpl extends GenericRepositoryImp<Region, Long> imp
 
     @Override
     public void remove(Region region) {
-        Session session = null;
         Transaction tx = null;
 
-        try {
-            session = super.getSession();
+        try (
+                Session session = super.getSession()
+        ) {
             tx = session.getTransaction();
             tx.begin();
 
@@ -108,8 +111,6 @@ public class RegionRepositoryImpl extends GenericRepositoryImp<Region, Long> imp
                 tx.rollback();
             }
             System.out.println(e.getMessage());
-        } finally {
-            session.close();
         }
     }
 }

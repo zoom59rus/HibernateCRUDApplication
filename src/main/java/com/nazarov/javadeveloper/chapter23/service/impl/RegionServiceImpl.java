@@ -47,7 +47,7 @@ public class RegionServiceImpl implements RegionService {
             return null;
         }
 
-        Region find = regionRepository.findById(region.getId());
+        Region find = regionRepository.getById(region.getId());
         if(find == null){
             log.warn("IN - update - region on id:{} not found", region.getId());
             return null;
@@ -65,7 +65,7 @@ public class RegionServiceImpl implements RegionService {
             return null;
         }
 
-        Region find = regionRepository.findById(id);
+        Region find = regionRepository.getById(id);
         if (find == null) {
             log.warn("IN - getById - region on id:{} not found.", id);
         }
@@ -79,7 +79,7 @@ public class RegionServiceImpl implements RegionService {
             log.warn("IN - getByName - name is null.");
             return null;
         }
-        Region find = regionRepository.findByName(name);
+        Region find = regionRepository.getByName(name);
         if (find == null) {
             log.warn("IN - getByName - region on name:\'{}\' not found.", name);
         }
@@ -94,7 +94,7 @@ public class RegionServiceImpl implements RegionService {
             return false;
         }
 
-        Region find = regionRepository.findById(region.getId());
+        Region find = regionRepository.getById(region.getId());
         if (find != null) {
             regionRepository.remove(region);
             return true;

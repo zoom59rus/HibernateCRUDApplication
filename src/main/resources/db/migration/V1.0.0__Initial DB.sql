@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS regions
 (
     id   BIGINT      NOT NULL GENERATED ALWAYS AS IDENTITY UNIQUE,
-    name varchar(50) NOT NULL UNIQUE,
+    name varchar(50) NOT NULL,
     PRIMARY KEY (id)
 );
 

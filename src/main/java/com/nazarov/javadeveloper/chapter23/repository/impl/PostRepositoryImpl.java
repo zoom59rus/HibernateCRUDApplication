@@ -4,6 +4,7 @@ import com.nazarov.javadeveloper.chapter23.annotations.MyRepository;
 import com.nazarov.javadeveloper.chapter23.entity.Post;
 import com.nazarov.javadeveloper.chapter23.repository.PostRepository;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,62 +17,69 @@ public class PostRepositoryImpl extends GenericRepositoryImp<Post, Long> impleme
     }
 
     @Override
-    public Post findByName(String name) {
+    public Post getByName(String name) {
         Post post = null;
-        Session session = null;
         String sqlQuery = String.format("SELECT * FROM posts WHERE content='%s'", name);
-        try{
-            session = super.getSession();
+        try (
+                Session session = super.getSession()
+        ) {
             post = (Post) session.createSQLQuery(sqlQuery).addEntity(Post.class).uniqueResult();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
-        }finally {
-            if(session != null){
-                session.close();
-            }
         }
 
         return post;
     }
 
     @Override
-    public Post findByContent(String content) {
-        return findByName(content);
+    public Post getByContent(String content) {
+        return getByName(content);
     }
 
     @Override
-    public Post findById(Long id) {
-        Session session = null;
+    public Post getById(Long id) {
         Post post = null;
-        try{
-            session = super.getSession();
-            post = session.find(Post.class, id);
-        }catch (Exception e){
+        try (
+                Session session = super.getSession()
+        ) {
+            post = session.get(Post.class, id);
+        } catch (Exception e) {
             System.out.println(e.getMessage());
-        }finally {
-            if(session != null){
-                session.close();
-            }
         }
+
         return post;
     }
 
     @Override
-    public List<Post> findAll() {
-        Session session = null;
+    public List<Post> getByWriterId(Long writerId) {
+        List<Post> posts = null;
+        try (
+                Session session = super.getSession()
+        ) {
+            posts = session.createSQLQuery(String.format("SELECT * FROM posts WHERE writer_id=%d", writerId))
+                    .addEntity(Post.class)
+                    .getResultList();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        if(posts == null){
+            return new ArrayList<>();
+        }
+
+        return posts;
+    }
+
+    @Override
+    public List<Post> getAll() {
         List<Post> posts = new ArrayList<>();
-        try{
-            session = super.getSession();
+        try (
+                Session session = super.getSession()
+        ) {
             posts = session.createSQLQuery("SELECT * FROM posts")
                     .addEntity(Post.class)
                     .list();
-            session.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
-        }finally {
-            if(session != null){
-                session.close();
-            }
         }
 
         return posts;
@@ -79,67 +87,61 @@ public class PostRepositoryImpl extends GenericRepositoryImp<Post, Long> impleme
 
     @Override
     public Post save(Post post) {
-        Session session = null;
-        try{
-            session = super.getSession();
-            session.getTransaction().begin();
+        Transaction tx = null;
+
+        try (
+                Session session = super.getSession()
+        ) {
+            tx = session.getTransaction();
+            tx.begin();
             session.save(post);
-            session.getTransaction().commit();
-            session.close();
-        }catch (Exception e){
-            if(session.getTransaction() != null){
-                session.getTransaction().rollback();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
             }
             System.out.println(e.getMessage());
-        }finally {
-            if(session != null){
-                session.close();
-            }
         }
 
         return post;
     }
 
     @Override
-    public Post update(Post post){
-        Session session = null;
-        try{
-            session = super.getSession();
-            session.getTransaction().begin();
+    public Post update(Post post) {
+        Transaction tx = null;
+        try (
+                Session session = super.getSession()
+        ) {
+            tx = session.getTransaction();
+            tx.begin();
             session.update(post);
-            session.getTransaction().commit();
-            session.close();
-        }catch (Exception e){
-            if(session.getTransaction() != null){
-                session.getTransaction().rollback();
+            session.refresh(post);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
             }
             System.out.println(e.getMessage());
-        }finally {
-            if(session != null){
-                session.close();
-            }
         }
+
         return post;
     }
 
     @Override
     public void remove(Post post) {
-        Session session = null;
-        try{
-            session = super.getSession();
-            session.getTransaction().begin();
+        Transaction tx = null;
+        try (
+                Session session = super.getSession()
+        ) {
+            tx = session.getTransaction();
+            tx.begin();
             session.delete(post);
-            session.getTransaction().commit();
-            session.close();
-        }catch (Exception e){
-            if(session.getTransaction() != null){
-                session.getTransaction().rollback();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
             }
             System.out.println(e.getMessage());
-        }finally {
-            if(session != null){
-                session.close();
-            }
         }
     }
 }

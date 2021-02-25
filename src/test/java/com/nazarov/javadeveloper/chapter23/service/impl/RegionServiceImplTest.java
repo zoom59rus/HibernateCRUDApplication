@@ -2,7 +2,6 @@ package com.nazarov.javadeveloper.chapter23.service.impl;
 
 import com.nazarov.javadeveloper.chapter23.entity.Region;
 import com.nazarov.javadeveloper.chapter23.repository.impl.RegionRepositoryImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,12 +26,12 @@ class RegionServiceImplTest {
 
     @Test
     void save() {
-        Mockito.when(regionRepository.findByName(testRegion2.getName())).thenReturn(null);
+        Mockito.when(regionRepository.getByName(testRegion2.getName())).thenReturn(null);
         Mockito.when(regionRepository.save(testRegion2)).thenAnswer(invocation -> {
             testRegion2.setId(77L);
             return testRegion2;
         });
-        Mockito.when(regionRepository.findByName(testRegion.getName())).thenReturn(testRegion);
+        Mockito.when(regionRepository.getByName(testRegion.getName())).thenReturn(testRegion);
 
         Region region = regionService.save(testRegion);
         assertNotNull(region);
@@ -51,15 +50,15 @@ class RegionServiceImplTest {
         regionService.save(null);
 
         Mockito.verify(regionRepository, Mockito.times(1)).save(Mockito.any(Region.class));
-        Mockito.verify(regionRepository, Mockito.times(2)).findByName(Mockito.anyString());
+        Mockito.verify(regionRepository, Mockito.times(2)).getByName(Mockito.anyString());
 
     }
 
     @Test
     void update() {
         Mockito.when(regionRepository.update(updateTestRegion)).thenReturn(updateTestRegion);
-        Mockito.when(regionRepository.findById(updateTestRegion.getId())).thenReturn(testRegion);
-        Mockito.when(regionRepository.findById(99L)).thenReturn(null);
+        Mockito.when(regionRepository.getById(updateTestRegion.getId())).thenReturn(testRegion);
+        Mockito.when(regionRepository.getById(99L)).thenReturn(null);
 
         Region result = regionService.update(updateTestRegion);
         assertNotNull(result);
@@ -78,14 +77,14 @@ class RegionServiceImplTest {
         assertNull(result4);
 
         Mockito.verify(regionRepository, Mockito.times(2)).update(Mockito.any(Region.class));
-        Mockito.verify(regionRepository, Mockito.times(3)).findById(Mockito.anyLong());
+        Mockito.verify(regionRepository, Mockito.times(3)).getById(Mockito.anyLong());
     }
 
     @Test
     void getById() {
-        Mockito.when(regionRepository.findById(Mockito.anyLong())).thenReturn(Mockito.mock(Region.class));
-        Mockito.when(regionRepository.findById(8L)).thenReturn(testRegion);
-        Mockito.when(regionRepository.findById(9L)).thenReturn(null);
+        Mockito.when(regionRepository.getById(Mockito.anyLong())).thenReturn(Mockito.mock(Region.class));
+        Mockito.when(regionRepository.getById(8L)).thenReturn(testRegion);
+        Mockito.when(regionRepository.getById(9L)).thenReturn(null);
 
         Region region = regionService.getById(7L);
         assertNotNull(region);
@@ -103,15 +102,15 @@ class RegionServiceImplTest {
         Region region4 = regionService.getById(9L);
         assertNull(region4);
 
-        Mockito.verify(regionRepository, Mockito.times(3)).findById(Mockito.anyLong());
+        Mockito.verify(regionRepository, Mockito.times(3)).getById(Mockito.anyLong());
 
     }
 
     @Test
     void getByName() {
-        Mockito.when(regionRepository.findByName(Mockito.anyString())).thenReturn(Mockito.mock(Region.class));
-        Mockito.when(regionRepository.findByName(testRegion.getName())).thenReturn(testRegion);
-        Mockito.when(regionRepository.findByName("Some name")).thenReturn(null);
+        Mockito.when(regionRepository.getByName(Mockito.anyString())).thenReturn(Mockito.mock(Region.class));
+        Mockito.when(regionRepository.getByName(testRegion.getName())).thenReturn(testRegion);
+        Mockito.when(regionRepository.getByName("Some name")).thenReturn(null);
 
         Region region = regionService.getByName("Some region");
         assertNotNull(region);
@@ -129,12 +128,12 @@ class RegionServiceImplTest {
         Region region4 = regionService.getByName("Some name");
         assertNull(region4);
 
-        Mockito.verify(regionRepository, Mockito.times(3)).findByName(Mockito.anyString());
+        Mockito.verify(regionRepository, Mockito.times(3)).getByName(Mockito.anyString());
     }
 
     @Test
     void remove() {
-        Mockito.when(regionRepository.findById(testRegion.getId())).thenReturn(testRegion);
+        Mockito.when(regionRepository.getById(testRegion.getId())).thenReturn(testRegion);
 
         boolean result = regionService.remove(null);
         assertEquals(false, result);
@@ -146,7 +145,7 @@ class RegionServiceImplTest {
         assertEquals(false, result3);
 
         Mockito.verify(regionRepository, Mockito.times(1)).remove(Mockito.any(Region.class));
-        Mockito.verify(regionRepository, Mockito.times(2)).findById(Mockito.any(Long.class));
+        Mockito.verify(regionRepository, Mockito.times(2)).getById(Mockito.any(Long.class));
     }
 
 }

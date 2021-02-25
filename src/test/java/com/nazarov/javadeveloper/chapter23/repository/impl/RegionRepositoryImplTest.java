@@ -28,28 +28,28 @@ class RegionRepositoryImplTest {
 
     @Test
     void findById() {
-        Region truRegion = regionRepository.findById(testRegion.getId());
+        Region truRegion = regionRepository.getById(testRegion.getId());
 
         assertNotNull(truRegion);
         assertNotNull(truRegion.getId());
         assertNotNull(truRegion.getName());
         assertEquals(testRegion.getId(), truRegion.getId());
 
-        Region falseRegion = regionRepository.findById(101L);
+        Region falseRegion = regionRepository.getById(101L);
 
         assertNull(falseRegion);
     }
 
     @Test
     void findByName() {
-        Region truRegion = regionRepository.findByName(testRegion.getName());
+        Region truRegion = regionRepository.getByName(testRegion.getName());
 
         assertNotNull(truRegion);
         assertNotNull(truRegion.getId());
         assertNotNull(truRegion.getName());
         assertEquals(testRegion.getName(), truRegion.getName());
 
-        Region falseRegion = regionRepository.findByName("Some_Name");
+        Region falseRegion = regionRepository.getByName("Some_Name");
 
         assertNull(falseRegion);
     }
@@ -100,7 +100,7 @@ class RegionRepositoryImplTest {
     void remove() {
         regionRepository.remove(testRegion);
 
-        Region region = regionRepository.findById(testRegion.getId());
+        Region region = regionRepository.getById(testRegion.getId());
 
         assertNull(region);
     }
