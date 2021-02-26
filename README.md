@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/zoom59rus/HibernateCRUDApplication.svg?branch=master)](https://travis-ci.org/zoom59rus/HibernateCRUDApplication)
 # Module_2_3
 # Реализовать консольное CRUD приложение
 
@@ -24,6 +25,3 @@
 Результатом выполнения задания должен быть репозиторий на github, с использованием Travis (https://travis-ci.org/) и отображением статуса сборки проекта.  
 
 ## Инструкция по запуску
-
-###Status
-[![Build Status](https://travis-ci.org/zoom59rus/HibernateCRUDApplication.svg?branch=master)](https://travis-ci.org/zoom59rus/HibernateCRUDApplication)
