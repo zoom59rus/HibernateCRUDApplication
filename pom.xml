@@ -70,18 +70,6 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <configuration>
-                            <transformers>
-                                <transformer>
-                                    <mainClass>com.nazarov.javadeveloper.chapter23.ApplicationRunner</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.flywaydb</groupId>
